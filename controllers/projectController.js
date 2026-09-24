@@ -1,4 +1,5 @@
 const projectRepository = require("../repositories/projectRepository");
+const feedbackRepository = require('../repositories/feedbackRepository');
 const {
     validateProject,
     toProjectResponse
@@ -47,8 +48,35 @@ async function getAllProjects(req, res) {
         });
     }
 }
+async function createFeedback(req, res) {
+  try {
+    const { id } = req.params;
+    const { nota, comentario } = req.body;
+    const project = await projectRepository.findById(id);
+    if (!project) return res.status(404).json({ error: "Projeto não encontrado" });
 
+    const feedback = await feedbackRepository.create(id, { nota, comentario });
+    const media = await feedbackRepository.updateProjectAverage(id);
+
+    res.status(201).json({ feedback, media });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+async function upvote(req, res) {
+  try {
+    const { id } = req.params;
+    const project = await projectRepository.upvote(id);
+    if (!project) return res.status(404).json({ error: "Projeto não encontrado" });
+    res.json(project);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
 module.exports = {
     createProject,
-    getAllProjects
+    getAllProjects,
+    createFeedback, 
+    upvote
 };

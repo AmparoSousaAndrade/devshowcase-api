@@ -39,8 +39,15 @@ async function findAllProjects() {
 
     return result.rows;
 }
-
+async function upvote(id) {
+  const result = await db.query(
+    "UPDATE projects SET stars = stars + 1 WHERE id = $1 RETURNING *",
+    [id]
+  );
+  return result.rows[0];
+}
 module.exports = {
     createProject,
-    findAllProjects
+    findAllProjects,
+    upvote
 };
