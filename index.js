@@ -47,5 +47,6 @@ app.get("/teste-banco", async (req, res) => {
 });
 
 app.listen(PORT, () => {
+    setInterval(() => {}, 10000);
     console.log(`Servidor rodando na porta ${PORT}`);
-});
+}); 

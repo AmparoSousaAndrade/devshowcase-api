@@ -51,7 +51,7 @@ async function getAllProjects(req, res) {
 async function createFeedback(req, res) {
   try {
     const { id } = req.params;
-    const { nota, comentario } = req.body;
+    const { score, comentario } = req.body;
     const project = await projectRepository.findById(id);
     if (!project) return res.status(404).json({ error: "Projeto não encontrado" });
 
