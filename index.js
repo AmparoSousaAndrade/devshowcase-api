@@ -2,6 +2,8 @@ const profileRoutes = require("./routes/profileRoutes");
 const technologyRoutes = require("./routes/technologyRoutes");
 const projectRoutes = require("./routes/projectRoutes");
 const feedbackRoutes = require('./routes/feedbackRoutes');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./docs/swagger');
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
@@ -16,6 +18,7 @@ app.use("/api/profiles", profileRoutes);
 app.use("/api/technologies", technologyRoutes);
 app.use("/api/projects", projectRoutes);
 app.use('/projects', feedbackRoutes);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 const PORT = process.env.PORT || 3000;
 
@@ -45,6 +48,8 @@ app.get("/teste-banco", async (req, res) => {
         });
     }
 });
+const errorHandler = require('./middlewares/errorHandler');
+app.use(errorHandler);
 
 app.listen(PORT, () => {
     setInterval(() => {}, 10000);

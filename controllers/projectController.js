@@ -31,27 +31,17 @@ async function createProject(req, res) {
     }
 }
 
-async function getAllProjects(req, res) {
-    try {
-        const projects =
-            await projectRepository.findAllProjects();
-
-        return res.status(200).json(
-            projects.map(toProjectResponse)
-        );
-
-    } catch (error) {
-        console.error("Erro ao buscar projetos:", error);
-
-        return res.status(500).json({
-            error: "Erro interno ao buscar projetos."
-        });
-    }
+async function getAllProjects(req, res, next) {
+  try {
+    const { tecnologia, page = 1, limit = 10 } = req.query;
+    const result = await projectRepository.findAllProjects({ tecnologia, page: Number(page), limit: Number(limit) });
+    return res.status(200).json(result); // { data, total, page, totalPages }
+  } catch (err) { next(err); }
 }
 async function createFeedback(req, res) {
   try {
     const { id } = req.params;
-    const { score, comentario } = req.body;
+    const { nota, comentario } = req.body;
     const project = await projectRepository.findById(id);
     if (!project) return res.status(404).json({ error: "Projeto não encontrado" });
 
